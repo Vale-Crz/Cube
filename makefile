@@ -1,34 +1,38 @@
-# Directorios de origen y destino
+# Directorios
 SRC_DIR := src
 BIN_DIR := bin
+OBJ_DIR := obj
+INCLUDE_DIR := include
 
-# Dependencias para SFML
+# Archivos fuente
+SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
+TARGET := $(BIN_DIR)/Main.exe
+
+# Compilador y banderas
+CXX := g++
+CXXFLAGS := -I$(INCLUDE_DIR) -std=c++17 -Wall -Wextra -g
 SFML := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lbox2d
 
-# Obtener todos los archivos .cpp en el directorio de origen
-CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
-EXE_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%.exe, $(CPP_FILES))
+# Regla principal
+all: $(TARGET)
 
-# Regla genérica para compilar cualquier archivo .cpp a .exe
-$(BIN_DIR)/%.exe: $(SRC_DIR)/%.cpp
-	g++ $< -o $@ $(SFML) -Iinclude
+# Regla para enlazar el ejecutable
+$(TARGET): $(OBJECTS)
+	mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(SFML)
 
-# Regla específica para 08_Tron.exe con dependencias adicionales
-$(BIN_DIR)/08_Tron.exe: $(SRC_DIR)/08_Tron.cpp $(SRC_DIR)/07_Fisica.cpp
-	g++ $^ -o $@ $(SFML) -Iinclude
+# Regla para compilar cada archivo fuente en objeto
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
-# Objetivo por defecto: compilar todo
-all: $(BIN_DIR)/08_Tron.exe $(BIN_DIR)/Ball.exe
+# Regla para ejecutar el programa
+runMain: $(TARGET)
+	./$(TARGET)
 
-# Reglas para ejecutar los binarios
-run08_Tron: $(BIN_DIR)/08_Tron.exe
-	./$(BIN_DIR)/08_Tron.exe
-
-runBall: $(BIN_DIR)/Main.exe
-	./$(BIN_DIR)/Main.exe
-
-# Regla para limpiar los binarios generados
+# Limpieza
 clean:
-	rm -f $(BIN_DIR)/*.exe
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
-.PHONY: all clean run08_Tron runBall
+.PHONY: all clean runMain

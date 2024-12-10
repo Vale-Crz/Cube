@@ -278,6 +278,16 @@ void Game::checkCollisions() {
 }
 */
 
+
+
+
+
+
+
+
+
+
+/*
 #include "Ball.hpp"
 #include <iostream>
 
@@ -454,3 +464,4 @@ void Game::checkCollisions() {
         }
     }
 }
+*/

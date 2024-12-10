@@ -1,3 +1,5 @@
+/*
+
 #include <SFML/Graphics.hpp>
 
 class Personaje {
@@ -55,3 +57,4 @@ int main() {
 
     return 0;
 }
+*/

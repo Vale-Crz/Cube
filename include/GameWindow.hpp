@@ -1,4 +1,4 @@
-class GameWindow {
+/* class GameWindow {
 public:
     GameWindow(int width, int height, const std::string& title) {
         window.create(sf::VideoMode(width, height), title);
@@ -35,3 +35,4 @@ public:
 private:
     sf::RenderWindow window;
 };
+*/

@@ -1,4 +1,4 @@
-
+/*
 class PhysicsSpace {
 public:
     PhysicsSpace() {
@@ -18,3 +18,4 @@ public:
 private:
     cpSpace* space;
 };
+*/

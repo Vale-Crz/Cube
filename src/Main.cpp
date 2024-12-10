@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Game.h"
 
 int main()
@@ -16,6 +15,7 @@ int main()
 
         //Render
         game.render();
+
 
 
     

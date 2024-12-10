@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <vector>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -21,11 +24,19 @@ class Game
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
     sf::Event event;
-    
+
+    //Mouse position
+    sf::Vector2i mousePosWindow;
+
+    //Game objects
+    std::vector<sf::RectangleShape> enemies;
+    sf::RectangleShape enemy;
+
 
     //Private funtions
     void initVariables();
     void initWindow();
+    void initEnemies();
     
 
     public:
@@ -38,7 +49,9 @@ class Game
     const bool running() const;
 
     //Funtions 
+    void spawnEnemy();
     void pollEvents();
     void update();
     void render();
+    void updateMousePositions();
 };

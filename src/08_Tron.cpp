@@ -449,6 +449,22 @@ void Game::checkCollisions() {
     }
 }*/
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
 #include "Ball.hpp"
 
 int main() {
@@ -463,3 +479,4 @@ int main() {
 
     return 0;
 }
+*/
