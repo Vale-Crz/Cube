@@ -1,3 +1,48 @@
+#ifndef GAME_HPP
+#define GAME_HPP
+
+#include <SFML/Graphics.hpp>
+#include <vector>
+
+class Game {
+public:
+    Game();
+    ~Game();
+
+    // Métodos principales
+    void handleEvents();
+    void update();
+    void render();
+
+    bool isRunning() const;
+
+private:
+    sf::RenderWindow window;
+    sf::CircleShape ball;
+    sf::Vector2f ballVelocity;
+
+    // Meta
+    sf::RectangleShape goal; // Meta
+
+    sf::RectangleShape player;
+    std::vector<sf::RectangleShape> platforms;
+    std::vector<sf::CircleShape> collectibles;
+    std::vector<sf::RectangleShape> obstacles;
+
+    int score;
+    bool gameOver;
+
+    // Métodos auxiliares
+    void initGame();
+    void resetGame();
+    void checkCollisions();
+    void createPlatforms();
+    void createCollectibles();
+    void createObstacles();
+};
+
+#endif
+
 /*
 #include <chipmunk/chipmunk.h>
 

@@ -1,3 +1,246 @@
+#include "Ball.hpp"
+#include <iostream>
+
+#include <cstdlib>
+#include <ctime>
+
+Game::Game() : window(sf::VideoMode(800, 600), "Bounce Ball Game"), score(0), gameOver(false) {
+    window.setFramerateLimit(60);
+
+    // Inicializar la pelota
+    ball.setRadius(10.f);
+    ball.setFillColor(sf::Color::Red);
+    ball.setPosition(500.f, 500.f);  // Ajustado para empezar más a la izquierda
+    ballVelocity = sf::Vector2f(0.f, 0.f);  // Velocidad inicial de la pelota
+
+    // Inicializar la meta
+    goal.setSize(sf::Vector2f(150.f, 25.f));  // Tamaño de la meta
+    goal.setFillColor(sf::Color::Blue);     // Color de la meta
+    goal.setPosition(350.f, 0.f);         // Posición de la meta
+
+    // Crear plataformas, coleccionables y obstáculos
+    createPlatforms();
+    createCollectibles();
+    createObstacles();
+
+
+}
+
+Game::~Game() {}
+
+void Game::initGame() {
+    score = 0;
+    gameOver = false;
+    ball.setPosition(100.f, 250.f);  // Posición inicial de la pelota ajustada
+    ballVelocity = sf::Vector2f(0.f, 0.f);  // Velocidad inicial
+    createPlatforms();
+    createCollectibles();
+    createObstacles();
+}
+
+void Game::resetGame() {
+    initGame();
+}
+
+bool Game::isRunning() const {
+    return window.isOpen();
+}
+
+void Game::handleEvents() {
+
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            window.close();
+    }
+    // Controlar la dirección de la pelota con las flechas
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        ballVelocity.x = -2.f;  // Reducido a 2 para hacer el movimiento más lento
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        ballVelocity.x = 2.f;  // Reducido a 2 para hacer el movimiento más lento
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        ballVelocity.y = -2.f;  // Reducido a 2 para hacer el movimiento más lento
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        ballVelocity.y = 2.f;  // Reducido a 2 para hacer el movimiento más lento
+    }
+
+/*
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            window.close();
+    }
+
+    // Movimiento de la bola en todas las direcciones
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && ball.getPosition().x > 0) {
+        ball.move(-5.f, 0.f);  // Mover hacia la izquierda
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && ball.getPosition().x + ball.getRadius() * 2 < window.getSize().x) {
+        ball.move(5.f, 0.f);  // Mover hacia la derecha
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && ball.getPosition().y > 0) {
+        ball.move(0.f, -5.f);  // Mover hacia arriba
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && ball.getPosition().y + ball.getRadius() * 2 < window.getSize().y) {
+        ball.move(0.f, 5.f);  // Mover hacia abajo
+    }
+    */
+}
+
+void Game::update() {
+    if (gameOver) return;
+
+    // Mover la pelota según su velocidad
+    ball.move(ballVelocity);
+
+    // Comprobar si la pelota ha salido de la ventana (se acaba el juego)
+    if (ball.getPosition().x <= 0 || ball.getPosition().x + ball.getRadius() * 2 >= window.getSize().x ||
+        ball.getPosition().y <= 0 || ball.getPosition().y + ball.getRadius() * 2 >= window.getSize().y) {
+        gameOver = true;
+    }
+
+    // Comprobar colisiones con plataformas, coleccionables y obstáculos
+    checkCollisions();
+}
+
+void Game::render() {
+
+    window.clear(sf::Color::Black);  // Limpiar la ventana con un color negro
+
+    if (gameOver) {
+        std::cout << "Game Over! Score: " << score << std::endl;
+        window.close();  // Cierra la ventana si el juego termina
+        return;
+    }
+
+    // Dibujar la meta
+    window.draw(goal);
+
+    // Dibujar la pelota
+    window.draw(ball);
+
+    // Dibujar plataformas
+    for (const auto& platform : platforms) {
+        window.draw(platform);
+    }
+
+    // Dibujar coleccionables
+    for (const auto& collectible : collectibles) {
+        window.draw(collectible);
+    }
+
+    // Dibujar obstáculos
+    for (const auto& obstacle : obstacles) {
+        window.draw(obstacle);
+    }
+
+    // Mostrar todo en la ventana
+    window.display();
+
+
+}
+
+void Game::createPlatforms() {
+    platforms.clear();
+    sf::RectangleShape platform(sf::Vector2f(100.f, 10.f));
+    platform.setFillColor(sf::Color::Green);
+
+    // Definimos plataformas en diferentes posiciones
+    platform.setPosition(200.f, 400.f);
+    platforms.push_back(platform);
+
+    platform.setPosition(500.f, 300.f);
+    platforms.push_back(platform);
+
+    platform.setPosition(300.f, 200.f);
+    platforms.push_back(platform);
+}
+
+void Game::createCollectibles() {
+    collectibles.clear();
+    sf::CircleShape collectible(5.f);  // Tamaño del coleccionable
+    collectible.setFillColor(sf::Color::Yellow);
+
+    std::srand(static_cast<unsigned>(std::time(nullptr)));  // Semilla para números aleatorios
+
+    int numberOfCollectibles = 20;  // Cambia este valor para aumentar la cantidad
+    for (int i = 0; i < numberOfCollectibles; ++i) {
+        float x = static_cast<float>(std::rand() % (window.getSize().x - 10));  // Evitar bordes
+        float y = static_cast<float>(std::rand() % (window.getSize().y - 10));
+        collectible.setPosition(x, y);
+        collectibles.push_back(collectible);
+    }
+}
+
+void Game::createObstacles() {
+
+    obstacles.clear();  // Limpiar cualquier obstáculo existente
+    sf::RectangleShape obstacle(sf::Vector2f(50.f, 10.f));  // Tamaño del obstáculo
+    obstacle.setFillColor(sf::Color::Red);
+
+    std::srand(static_cast<unsigned>(std::time(nullptr)));  // Semilla para números aleatorios
+
+    int numberOfObstacles = 10;  // Número de obstáculos que quieres
+    for (int i = 0; i < numberOfObstacles; ++i) {
+        float x = static_cast<float>(std::rand() % (window.getSize().x - static_cast<int>(obstacle.getSize().x)));
+        float y = static_cast<float>(std::rand() % (window.getSize().y - static_cast<int>(obstacle.getSize().y)));
+
+        // Coloca el obstáculo en la posición generada
+        obstacle.setPosition(x, y);
+
+        // Opcional: Evitar que los obstáculos estén cerca de la posición inicial de la pelota o la meta
+        sf::FloatRect ballBounds = ball.getGlobalBounds();
+        sf::FloatRect goalBounds = goal.getGlobalBounds();
+        sf::FloatRect obstacleBounds = obstacle.getGlobalBounds();
+
+        if (obstacleBounds.intersects(ballBounds) || obstacleBounds.intersects(goalBounds)) {
+            --i;  // Si hay intersección, intenta otra posición
+            continue;
+        }
+
+        // Agregar el obstáculo a la lista
+        obstacles.push_back(obstacle);
+    }
+}
+
+void Game::checkCollisions() {
+    // Colisiones con plataformas
+    for (const auto& platform : platforms) {
+        if (ball.getGlobalBounds().intersects(platform.getGlobalBounds())) {
+            ballVelocity.y = -10.f;  // Rebote con la plataforma
+        }
+
+
+    //Cambio
+    // Colisión con la meta
+    if (ball.getGlobalBounds().intersects(goal.getGlobalBounds())) {
+    std::cout << "¡Has alcanzado la meta! ¡Felicidades!" << std::endl;
+    resetGame();  // Reiniciar el juego
+}
+    }
+
+    // Colisiones con coleccionables
+    for (size_t i = 0; i < collectibles.size(); ++i) {
+        if (ball.getGlobalBounds().intersects(collectibles[i].getGlobalBounds())) {
+            collectibles.erase(collectibles.begin() + i);  // Eliminamos el coleccionable
+            score += 10;  // Sumamos puntos
+            break;
+        }
+    }
+
+    // Colisiones con obstáculos
+    for (const auto& obstacle : obstacles) {
+        if (ball.getGlobalBounds().intersects(obstacle.getGlobalBounds())) {
+            gameOver = true;  // Fin del juego si hay colisión con un obstáculo
+            break;
+        }
+    }
+}
+
+
 /*#include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <iostream>

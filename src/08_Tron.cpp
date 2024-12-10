@@ -1,3 +1,23 @@
+#include "Ball.hpp"
+//#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <vector>
+#include <windows.h>
+
+int main() {
+    Game game; // Clase principal del juego
+
+    // Bucle principal del juego
+    while (game.isRunning()) {
+        game.handleEvents();
+        game.update();
+        game.render();
+    }
+
+    return 0;
+}
+
+
 /// Code written by Bordeanu Calin
 /*
 #include <SFML/Graphics.hpp>
