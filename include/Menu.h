@@ -11,7 +11,6 @@
 #include <windows.h>
 #include <vector>
 
-using namespace sf;
 
 #define Max_main_menu 2
 
@@ -21,15 +20,19 @@ public:
 
     void moveUp();
     void moveDown();
-
     int getMenuPressed() const { return menuSelected; }
-
-    void draw(RenderWindow& window);
+    void draw(sf::RenderWindow& window);
 
     virtual ~Menu();
 
 private:
     int menuSelected;
-    Font font;
-    Text mainMenu[Max_main_menu];
+    sf::Font font;
+    sf::Text mainMenu[Max_main_menu];
+    sf::Text titleText;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite; 
+
+    void initBackgroud();
+    void initTitle(float width);
 };

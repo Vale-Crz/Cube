@@ -3,7 +3,7 @@
 
 void Player::initVariables()
 {
-    this->movementSpeed = 5.f;//Velocidad del jugador 
+    this->moving = false; 
 }
 
 
@@ -22,45 +22,53 @@ void Player::initSprite()
     this->currentFrame = sf::IntRect(0, 0, 30, 30);
 
     this->sprite.setTextureRect((this->currentFrame));
-    this->sprite.setScale(0.5f, 0.5f); // Ajustar el tamaño del sprite (opcional)
+    this->sprite.setScale(1.f, 1.f); // Ajustar el tamaño del sprite (opcional)
     this->sprite.setPosition(100.f, 250.f); // Posición inicial
+}
+
+void Player::initAnimations()
+{
+    this->animationTimer.restart();
 }
 
 Player::Player(float x, float y)
 {
     this->initVariables();
+    this->initVariables();
     this->initTexture();
     this->initSprite();
+    this->initAnimations();
 }
 
 Player::~Player()
-{
-}
-
-
+{}
 
 void Player::updateInput()
 {
-    //Keybord input 
+    this->moving = false;
     //Left
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
         this->sprite.move(-this->movementSpeed, 0.f);
+        this->moving = true;
     } 
     //Right
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         this->sprite.move(this->movementSpeed, 0.f);
+        this->moving = true;
     } 
     //Up
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         this->sprite.move(0.f , -this->movementSpeed);
+        this->moving = true;
     } 
     //Down
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
         this->sprite.move(0.f , this->movementSpeed);
+        this->moving = true;
     } 
 }
 
@@ -81,10 +89,27 @@ void Player::updateWindowBoundCollision(const sf::RenderTarget * target)
         this->sprite.setPosition(playerBounds.left, target->getSize().y - playerBounds.height);
 }
 
+void Player::updateAnimatios()
+{
+    if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
+    {
+            if(this->moving == false)//IDLE animation
+        {
+                this->currentFrame.left +=  32.f;
+                if(this->currentFrame.left >= 96.f)
+                    this->currentFrame.left = 0;
+        }
+
+        this->animationTimer.restart();
+        this->sprite.setTextureRect(this->currentFrame);
+    }
+}
+
 
 void Player::update(const sf::RenderTarget* target)
 {
     this->updateInput();
+    this->updateAnimatios();
     //Window bounds collision
     this->updateWindowBoundCollision(target);
 

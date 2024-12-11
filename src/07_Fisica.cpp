@@ -7,8 +7,6 @@ Game::Game()
     : window(sf::VideoMode(800, 600), "Bounce Ball Game"), score(0), gameOver(false), player(100.f, 250.f)
 {
     window.setFramerateLimit(144);
-    
-
 
     // Inicializar la meta
     goal.setSize(sf::Vector2f(150.f, 25.f)); // Tamaño de la meta
