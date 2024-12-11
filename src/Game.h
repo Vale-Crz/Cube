@@ -1,100 +1,50 @@
 #pragma once
+#include "Player.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 
-#include <vector>
-
-class Game
-{
-    private:
-    // Variables
-    sf::RenderWindow* window;
+class Game {
+private:
+    sf::RenderWindow window;
     sf::VideoMode videoMode;
     sf::Event event;
 
-    //Window
-    sf::RenderWindow* window;
-    sf::VideoMode videoMode;
-    sf::Event event;
+    //Jugador 
+    Player player;
 
+    sf::CircleShape ball;
+    sf::Vector2f ballVelocity;
 
-    //Private funtions
-    void initVariables();
-    void initWindow();
+    sf::RectangleShape goal;
 
+    std::vector<sf::RectangleShape> platforms;
+    std::vector<sf::CircleShape> collectibles;
+    std::vector<sf::RectangleShape> obstacles;
 
-    public:
-    //Constructors / Desctructors
+    sf::Font font;
+    sf::Text uiText;
+
+    int health;
+    unsigned points;
+    int score;
+    bool gameOver;
+
+    void initGame();
+    void resetGame();
+    void checkCollisions();
+    void createPlatforms();
+    void createCollectibles();
+    void createObstacles();
+    void initFonts();
+    void initText();
+
+public:
     Game();
     virtual ~Game();
 
-
-    //Accesors
-    const bool running() const;
-
-    //Funtions
-    void pollEvents();
+    bool isRunning() const;
+    void handleEvents();
+    void updateText();
+    void renderText(sf::RenderTarget& target);
     void update();
     void render();
-};
-/*#pragma once
-
-#include <iostream>
-#include <vector>
-
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>*/
-
-/*  
-    Class that acts as the game engine
-    Wrapper class.
-*/
-
-
-
-class Game
-{
-    private:
-    //Variables 
-    //Window
-    sf::RenderWindow* window;
-    sf::VideoMode videoMode;
-    sf::Event event;
-
-    //Mouse position
-    sf::Vector2i mousePosWindow;
-
-    //Game objects
-    std::vector<sf::RectangleShape> enemies;
-    sf::RectangleShape enemy;
-
-
-    //Private funtions
-    void initVariables();
-    void initWindow();
-    void initEnemies();
-    
-
-    public:
-    //Constructors / Desctructors
-    Game();
-    virtual ~Game();
-
-
-    //Accesors
-    const bool running() const;
-
-    //Funtions 
-    void spawnEnemy();
-    void pollEvents();
-    void update();
-    void render();
-    void updateMousePositions();
 };

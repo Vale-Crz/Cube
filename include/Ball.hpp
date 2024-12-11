@@ -1,5 +1,5 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+/*
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -15,6 +15,20 @@ public:
     void render();
 
     bool isRunning() const;
+
+    //Text
+    sf::Font font;
+    sf::Text uiText;
+
+    //Game logic
+    int health;
+    unsigned points;
+
+
+    //Funtios 
+    void initFonts();
+    void initText();
+        
 
 private:
     sf::RenderWindow window;
@@ -39,9 +53,9 @@ private:
     void createPlatforms();
     void createCollectibles();
     void createObstacles();
-};
+};*/
 
-#endif
+
 
 /*
 #include <chipmunk/chipmunk.h>
@@ -77,7 +91,7 @@ private:
     int radius;
     cpBody* body;
     cpShape* shape;
-};*/
+};
 
 #ifndef GAME_HPP
 #define GAME_HPP
@@ -120,3 +134,4 @@ private:
 };
 
 #endif
+*/
