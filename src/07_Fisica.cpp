@@ -2,10 +2,11 @@
 #include <cstdlib>
 #include <ctime>
 
+
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Bounce Ball Game"), score(0), gameOver(false), player(100.f, 250.f)
 {
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(144);
     
 
 
@@ -25,14 +26,15 @@ Game::Game()
     // Inicializar fuentes y texto
     initFonts();
     initText();
+
 }
 
 Game::~Game() {}
 
-void Game::initGame() {
+void Game::initGame() 
+{
     gameOver = false;
-    ball.setPosition(100.f, 250.f);
-    ballVelocity = sf::Vector2f(0.f, 0.f);
+    
     createPlatforms();
     createCollectibles();
     createObstacles();
@@ -81,7 +83,7 @@ void Game::renderText(sf::RenderTarget& target) {
 void Game::update() {
     if (gameOver) return;
 
-    // Mover la pelota según su velocidad
+    //Actualizacion jugador 
     player.update(&window);
 
     // Comprobar colisiones con plataformas, coleccionables y obstáculos
@@ -123,6 +125,7 @@ void Game::render() {
 
     window.display();
 }
+
 
 void Game::createPlatforms() {
     platforms.clear();
@@ -219,3 +222,5 @@ void Game::initText() {
     uiText.setPosition(10.f, 10.f); // Esquina superior izquierda
     uiText.setString("Score: 0\nHealth: 3");
 }
+
+

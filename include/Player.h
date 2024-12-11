@@ -5,11 +5,16 @@
 class Player
 {
     private:
-        sf::CircleShape ball;
-        float movementSpeed = 5.f;
+        sf::Sprite sprite;
+        sf::Texture textureSheet;
+        sf::IntRect currentFrame;
+        float movementSpeed = 3.f;
 
         void initVariables();
-        void initShape();
+        void initTexture();
+        void initSprite(); 
+
+        
 
     public:
         Player(float x = 0.f, float y = 0.f);
@@ -23,3 +28,4 @@ class Player
         sf::FloatRect getBounds() const;
 
 };
+

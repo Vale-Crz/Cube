@@ -1,22 +1,36 @@
 #include "Player.h"
 
+
 void Player::initVariables()
 {
-    this->movementSpeed = 10.f;
+    this->movementSpeed = 5.f;//Velocidad del jugador 
 }
 
-void Player::initShape()
+
+void Player::initTexture()
 {
-    ball.setRadius(10.f);
-    ball.setFillColor(sf::Color::Red);
+    if (!this->textureSheet.loadFromFile("assets/images/BlueBallSpriteTest.png")) { // Ruta a tu imagen
+        std::cerr << "ERROR::PLAYER::Could not load the player sheet" << std::endl;
+    }
+}
+
+void Player::initSprite()
+{
+    //Set the exture to the sprite
+    this->sprite.setTexture(this->textureSheet);
+
+    this->currentFrame = sf::IntRect(0, 0, 30, 30);
+
+    this->sprite.setTextureRect((this->currentFrame));
+    this->sprite.setScale(0.5f, 0.5f); // Ajustar el tamaño del sprite (opcional)
+    this->sprite.setPosition(100.f, 250.f); // Posición inicial
 }
 
 Player::Player(float x, float y)
 {
-    ball.setPosition(100.f, 250.f);//Specific position
-
     this->initVariables();
-    this->initShape();
+    this->initTexture();
+    this->initSprite();
 }
 
 Player::~Player()
@@ -31,61 +45,58 @@ void Player::updateInput()
     //Left
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        this->ball.move(-this->movementSpeed, 0.f);
+        this->sprite.move(-this->movementSpeed, 0.f);
     } 
-
     //Right
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        this->ball.move(this->movementSpeed, 0.f);
+        this->sprite.move(this->movementSpeed, 0.f);
     } 
-    
     //Up
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        this->ball.move(0.f , -this->movementSpeed);
+        this->sprite.move(0.f , -this->movementSpeed);
     } 
-
     //Down
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        this->ball.move(0.f , this->movementSpeed);
+        this->sprite.move(0.f , this->movementSpeed);
     } 
 }
 
 void Player::updateWindowBoundCollision(const sf::RenderTarget * target)
 {
     //Left 
-    sf::FloatRect playerBounds = this->ball.getGlobalBounds();
+    sf::FloatRect playerBounds = this->sprite.getGlobalBounds();
     if (playerBounds.left <= 0.f)
-        this->ball.setPosition(0.f, playerBounds.top);
+        this->sprite.setPosition(0.f, playerBounds.top);
     //Right
     if(playerBounds.left + playerBounds.width >= target->getSize().x)
-        this->ball.setPosition(target->getSize().x - playerBounds.width, playerBounds.top);
+        this->sprite.setPosition(target->getSize().x - playerBounds.width, playerBounds.top);
     //Top
     if (playerBounds.top <= 0.f)
-        this->ball.setPosition(playerBounds.left , 0.f);
+        this->sprite.setPosition(playerBounds.left , 0.f);
     //Bottom
     if(playerBounds.top + playerBounds.height >= target->getSize().y)
-        this->ball.setPosition(playerBounds.left, target->getSize().y - playerBounds.height);
-
-
+        this->sprite.setPosition(playerBounds.left, target->getSize().y - playerBounds.height);
 }
+
 
 void Player::update(const sf::RenderTarget* target)
 {
     this->updateInput();
-
     //Window bounds collision
     this->updateWindowBoundCollision(target);
 
 }
 
-void Player::render(sf::RenderTarget *target)
+void Player::render(sf::RenderTarget* target)
 {
-    target->draw(this->ball);
+    target->draw(this->sprite);
 }
 
-sf::FloatRect Player::getBounds() const {
-    return this->ball.getGlobalBounds();
+
+sf::FloatRect Player::getBounds() const
+{
+    return this->sprite.getGlobalBounds();
 }

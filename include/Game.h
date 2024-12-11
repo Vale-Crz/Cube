@@ -11,9 +11,6 @@ private:
     //Jugador 
     Player player;
 
-    sf::CircleShape ball;
-    sf::Vector2f ballVelocity;
-
     sf::RectangleShape goal;
 
     std::vector<sf::RectangleShape> platforms;
@@ -37,6 +34,8 @@ private:
     void initFonts();
     void initText();
 
+
+
 public:
     Game();
     virtual ~Game();
@@ -47,4 +46,5 @@ public:
     void renderText(sf::RenderTarget& target);
     void update();
     void render();
+
 };
