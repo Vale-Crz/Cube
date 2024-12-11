@@ -6,7 +6,7 @@ Menu::Menu(float width, float height) {
     }
 
     // Configurar las opciones del menú
-    const std::string menuItems[] = {"Play", "Options", "About", "Exit"};
+    const std::string menuItems[] = {"Play", "Exit"};
     for (int i = 0; i < Max_main_menu; ++i) {
         mainMenu[i].setFont(font);
         mainMenu[i].setFillColor(Color::White);

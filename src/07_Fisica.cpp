@@ -39,7 +39,7 @@ void Game::initGame() {
 
     // Reiniciar puntaje y salud
     score = 0;
-    health = 20;
+    health = 3;
 
     // Actualizar texto inicial
     updateText();
@@ -217,5 +217,5 @@ void Game::initText() {
     uiText.setCharacterSize(24);
     uiText.setFillColor(sf::Color::White);
     uiText.setPosition(10.f, 10.f); // Esquina superior izquierda
-    uiText.setString("Score: 0\nHealth: 20");
+    uiText.setString("Score: 0\nHealth: 3");
 }
