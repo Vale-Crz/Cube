@@ -1,46 +1,23 @@
-/*
+#include "Audio.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+Audio::Audio() {}
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Reproductor de musica");
+Audio::~Audio() {}
 
-    sf::Music music;
-    if (!music.openFromFile("./assets/music/musica.ogg"))
-    {
-        // Error al cargar el archivo de música
-        return -1;
+bool Audio::loadMusic(const std::string& filename) {
+    if (!music.openFromFile(filename)) {
+        std::cerr << "ERROR: Music file could not be loaded!" << std::endl;
+        return false;
     }
-
-    // Reproducir la música
-    music.play();
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-        }
-
-        window.clear();
-        // Dibujar elementos adicionales en la ventana si es necesario
-        window.display();
-
-        // Esperar hasta que la música termine
-        if (music.getStatus() != sf::Music::Playing)
-        {
-            window.close();
-        }
-    }
-
-    return 0;
+    return true;
 }
 
+void Audio::playMusic() {
+    music.setLoop(true); // Configura la música para que se reproduzca en bucle
+    music.play();
+}
 
-*/
+void Audio::stopMusic() {
+    music.stop();
+}
+

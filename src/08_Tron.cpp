@@ -1,6 +1,6 @@
 #include "Menu.h"
 #include "Game.h"
-#include <SFML/Window.hpp>
+#include "Audio.h"
 
 using namespace sf;
 
@@ -10,6 +10,13 @@ int main() {
 
     // Crear el menú
     Menu mainMenu(window.getSize().x, window.getSize().y);
+
+    //Reproducir musica
+    Audio audio;
+    if (!audio.loadMusic("./assets/music/ParaMenu.MP3")) {
+        return -1; // Salir si no se puede cargar el audio
+    }
+    audio.playMusic(); // Reproducir música al inicio
 
     // Bandera para controlar el estado del juego
     bool inGame = false;
@@ -37,6 +44,7 @@ int main() {
                             // Opción "Play" seleccionada
                             inGame = true;
                             game = new Game(); // Inicializa el juego
+                            audio.stopMusic();
                         } else if (selectedOption == 1) {
                             // Opción "Exit" seleccionada
                             window.close();
@@ -52,6 +60,7 @@ int main() {
                     inGame = false;
                     delete game;
                     game = nullptr;
+                    audio.playMusic();
                 }
             }
         }
