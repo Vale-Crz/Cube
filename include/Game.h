@@ -8,8 +8,9 @@ private:
     sf::VideoMode videoMode;
     sf::Event event;
 
-    //Jugador 
+    //Externos
     Player player;
+    Musica gameMusic;
 
     sf::RectangleShape goal;
     std::vector<sf::CircleShape> collectibles;

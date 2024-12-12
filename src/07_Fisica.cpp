@@ -22,10 +22,18 @@ Game::Game()
     initText();
     initBackgroudd();
     initEnemies();
+    
+    if (gameMusic.loadBackgroundMusic("./assets/music/ParaJuego.MP3")) 
+    {
+        gameMusic.playBackgroundMusic();
+    }
 
 }
 
-Game::~Game() {}
+Game::~Game() 
+{
+    gameMusic.stopBackgroundMusic();
+}
 
 void Game::initGame() 
 {
@@ -245,7 +253,7 @@ void Game::checkCollisions() {
 }
 
 void Game::initFonts() {
-    if (!font.loadFromFile("assets/fonts/Ring.ttf")) {
+    if (!font.loadFromFile("assets/fonts/Daydream.ttf")) {
         std::cerr << "ERROR::GAME::INITFONTS::Failed to load font!" << std::endl;
     }
 }

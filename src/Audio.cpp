@@ -4,7 +4,8 @@ Audio::Audio() {}
 
 Audio::~Audio() {}
 
-bool Audio::loadMusic(const std::string& filename) {
+bool Audio::loadMusic(const std::string& filename) 
+{
     if (!music.openFromFile(filename)) {
         std::cerr << "ERROR: Music file could not be loaded!" << std::endl;
         return false;
@@ -12,12 +13,14 @@ bool Audio::loadMusic(const std::string& filename) {
     return true;
 }
 
-void Audio::playMusic() {
+void Audio::playMusic() 
+{
     music.setLoop(true); // Configura la música para que se reproduzca en bucle
     music.play();
 }
 
-void Audio::stopMusic() {
+void Audio::stopMusic() 
+{
     music.stop();
 }
 

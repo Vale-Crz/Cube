@@ -17,8 +17,8 @@ $(BIN_DIR)/%.exe: $(SRC_DIR)/%.cpp
 $(shell mkdir -p $(BIN_DIR))
 
 # Regla para compilar el juego completo (incluir múltiples archivos .cpp como 08_Tron.cpp y 07_Fisica.cpp)
-$(BIN_DIR)/08_Tron.exe: $(SRC_DIR)/08_Tron.cpp $(SRC_DIR)/07_Fisica.cpp $(SRC_DIR)/Player.cpp $(SRC_DIR)/Menu.cpp $(SRC_DIR)/Audio.cpp
-	g++ $(SRC_DIR)/08_Tron.cpp $(SRC_DIR)/07_Fisica.cpp $(SRC_DIR)/Player.cpp $(SRC_DIR)/Menu.cpp $(SRC_DIR)/Audio.cpp -o $(BIN_DIR)/08_Tron.exe $(SFML) -Iinclude
+$(BIN_DIR)/08_Tron.exe: $(SRC_DIR)/08_Tron.cpp $(SRC_DIR)/07_Fisica.cpp $(SRC_DIR)/Player.cpp $(SRC_DIR)/Menu.cpp $(SRC_DIR)/Audio.cpp $(SRC_DIR)/Music.cpp
+	g++ $(SRC_DIR)/08_Tron.cpp $(SRC_DIR)/07_Fisica.cpp $(SRC_DIR)/Player.cpp $(SRC_DIR)/Menu.cpp $(SRC_DIR)/Audio.cpp $(SRC_DIR)/Music.cpp -o $(BIN_DIR)/08_Tron.exe $(SFML) -Iinclude
 
 # Regla por defecto para compilar todos los archivos .cpp
 all: $(BIN_DIR)/08_Tron.exe
