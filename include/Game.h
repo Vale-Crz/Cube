@@ -15,24 +15,37 @@ private:
 
     std::vector<sf::RectangleShape> platforms;
     std::vector<sf::CircleShape> collectibles;
-    std::vector<sf::RectangleShape> obstacles;
+
 
     sf::Font font;
     sf::Text uiText;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite; 
+
 
     int health;
     unsigned points;
     int score;
     bool gameOver;
 
+    std::vector<sf::RectangleShape> enemies;
+    sf::RectangleShape enemy;
+    float enemySpawnTimer;
+    float enemySpawnTimerMax;
+    int maxEnemies;
+
     void initGame();
     void resetGame();
     void checkCollisions();
-    void createPlatforms();
     void createCollectibles();
-    void createObstacles();
     void initFonts();
     void initText();
+    void initBackgroudd();
+    void initEnemies();
+    void spawnEnemy();
+    void updateEnemies();
+    void renderEnemies(sf::RenderTarget& target);
+
 
 
 

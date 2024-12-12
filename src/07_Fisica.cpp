@@ -13,17 +13,17 @@ Game::Game()
     goal.setFillColor(sf::Color::Blue); // Color de la meta
     goal.setPosition(325.f, 0.f); // Posición de la meta
 
-    // Crear plataformas, coleccionables y obstáculos
-    createPlatforms();
+    // Crear coleccionables
     createCollectibles();
-    createObstacles();
-
+    
     this->score = 0;
-    this->health = 3;
+    this->health = 5;
 
     // Inicializar fuentes y texto
     initFonts();
     initText();
+    initBackgroudd();
+    initEnemies();
 
 }
 
@@ -33,16 +33,17 @@ void Game::initGame()
 {
     gameOver = false;
     
-    createPlatforms();
     createCollectibles();
-    createObstacles();
 
     // Reiniciar puntaje y salud
     score = 0;
-    health = 3;
+    health = 5;
 
     // Actualizar texto inicial
     updateText();
+
+    enemies.clear();
+    enemySpawnTimer = 0.f;
 }
 
 void Game::resetGame() {
@@ -84,6 +85,9 @@ void Game::update() {
     //Actualizacion jugador 
     player.update(&window);
 
+    // Actualización de enemigos
+    updateEnemies();
+
     // Comprobar colisiones con plataformas, coleccionables y obstáculos
     checkCollisions();
 
@@ -97,47 +101,32 @@ void Game::update() {
 }
 
 void Game::render() {
-    window.clear(sf::Color::Black);
+    window.clear();
 
-    if (gameOver) {
+    if (gameOver) 
+    {
         std::cout << "Game Over! Score: " << score << std::endl;
         window.close();
         return;
     }
 
+
     // Dibujar elementos del juego
+    window.draw(backgroundSprite);
     window.draw(goal);
     player.render(&window);
-    for (const auto& platform : platforms) {
-        window.draw(platform);
-    }
-    for (const auto& collectible : collectibles) {
+
+    for (const auto& collectible : collectibles) 
+    {
         window.draw(collectible);
     }
-    for (const auto& obstacle : obstacles) {
-        window.draw(obstacle);
-    }
+
+    renderEnemies(window);
 
     // Dibujar texto de la interfaz
     renderText(window);
 
     window.display();
-}
-
-
-void Game::createPlatforms() {
-    platforms.clear();
-    sf::RectangleShape platform(sf::Vector2f(100.f, 10.f));
-    platform.setFillColor(sf::Color::Green);
-
-    platform.setPosition(200.f, 400.f);
-    platforms.push_back(platform);
-
-    platform.setPosition(500.f, 300.f);
-    platforms.push_back(platform);
-
-    platform.setPosition(300.f, 200.f);
-    platforms.push_back(platform);
 }
 
 void Game::createCollectibles() {
@@ -156,32 +145,80 @@ void Game::createCollectibles() {
     }
 }
 
-void Game::createObstacles() {
-    obstacles.clear();
-    sf::RectangleShape obstacle(sf::Vector2f(50.f, 10.f));
-    obstacle.setFillColor(sf::Color::Red);
+void Game::initEnemies() {
+    enemy.setSize(sf::Vector2f(50.f, 50.f));
+    enemySpawnTimerMax = 18.f;//Generador de enemigos
+    enemySpawnTimer = enemySpawnTimerMax;
+    maxEnemies = 20;//Cantidad en pantalla
+}
 
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+void Game::spawnEnemy() {
+    if (enemies.size() < maxEnemies) {
+        sf::RectangleShape newEnemy(enemy);
 
-    int numberOfObstacles = 10;
-    for (int i = 0; i < numberOfObstacles; ++i) {
-        float x = static_cast<float>(std::rand() % (window.getSize().x - static_cast<int>(obstacle.getSize().x)));
-        float y = static_cast<float>(std::rand() % (window.getSize().y - static_cast<int>(obstacle.getSize().y)));
+        // Posición aleatoria
+        newEnemy.setPosition(
+            static_cast<float>(rand() % static_cast<int>(window.getSize().x - newEnemy.getSize().x)),
+            0.f
+        );
 
-        obstacle.setPosition(x, y);
-        obstacles.push_back(obstacle);
+        // Asignar un color aleatorio con un tamaño y puntaje distinto
+        int type = rand() % 5;
+        switch (type) {
+        case 0:
+            newEnemy.setSize(sf::Vector2f(15.f, 15.f));
+            newEnemy.setFillColor(sf::Color::Magenta);
+            break;
+        case 1:
+            newEnemy.setSize(sf::Vector2f(20.f, 20.f));
+            newEnemy.setFillColor(sf::Color::Blue);
+            break;
+        case 2:
+            newEnemy.setSize(sf::Vector2f(25.f, 25.f));
+            newEnemy.setFillColor(sf::Color::Cyan);
+            break;
+        case 3:
+            newEnemy.setSize(sf::Vector2f(30.f, 30.f));
+            newEnemy.setFillColor(sf::Color::Red);
+            break;
+        case 4:
+            newEnemy.setSize(sf::Vector2f(35.f, 35.f));
+            newEnemy.setFillColor(sf::Color::Green);
+            break;
+        }
+
+        enemies.push_back(newEnemy);
+    }
+}
+
+void Game::updateEnemies() {
+    // Temporizador para generar enemigos
+    if (enemySpawnTimer >= enemySpawnTimerMax) {
+        spawnEnemy();
+        enemySpawnTimer = 0.f;
+    } else {
+        enemySpawnTimer += 1.f;
+    }
+
+    // Mover enemigos hacia abajo
+    for (size_t i = 0; i < enemies.size(); i++) {
+        enemies[i].move(0.f, 1.f);
+
+        // Si un enemigo sale de la pantalla, reduce salud y elimínalo
+        if (enemies[i].getPosition().y > window.getSize().y) {
+            enemies.erase(enemies.begin() + i);
+            i--;
+        }
+    }
+}
+
+void Game::renderEnemies(sf::RenderTarget& target) {
+    for (const auto& enemy : enemies) {
+        target.draw(enemy);
     }
 }
 
 void Game::checkCollisions() {
-    // Colisiones con plataformas
-    for (const auto& platform : platforms) {
-        if (player.getBounds().intersects(platform.getGlobalBounds())) {
-            // Puedes manejar el rebote o la lógica correspondiente aquí
-            std::cout << "Rebote en plataforma" << std::endl;
-        }
-    }
-
     // Colisión con la meta
     if (player.getBounds().intersects(goal.getGlobalBounds())) {
         std::cout << "¡Has alcanzado la meta! ¡Felicidades!" << std::endl;
@@ -192,16 +229,18 @@ void Game::checkCollisions() {
     for (size_t i = 0; i < collectibles.size(); ++i) {
         if (player.getBounds().intersects(collectibles[i].getGlobalBounds())) {
             collectibles.erase(collectibles.begin() + i);
-            score += 10; // Incrementa el puntaje
+            score += 2; // Incrementa el puntaje
             break;
         }
     }
 
-    // Colisiones con obstáculos
-    for (size_t i = 0; i < obstacles.size(); ++i) {
-        if (player.getBounds().intersects(obstacles[i].getGlobalBounds())) {
-            health -= 1; // Disminuir salud
-            obstacles.erase(obstacles.begin() + i);
+    // Colisiones con enemigos
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (player.getBounds().intersects(enemies[i].getGlobalBounds())) {
+            // Eliminar enemigo, reducir salud 
+            health -= 1;
+
+            enemies.erase(enemies.begin() + i);
             break;
         }
     }
@@ -218,7 +257,13 @@ void Game::initText() {
     uiText.setCharacterSize(24);
     uiText.setFillColor(sf::Color::White);
     uiText.setPosition(10.f, 10.f); // Esquina superior izquierda
-    uiText.setString("Score: 0\nHealth: 3");
+    uiText.setString("Score: 0\nHealth: 5");
 }
 
-
+void Game::initBackgroudd()
+{
+    if (!backgroundTexture.loadFromFile("./assets/images/Fondo.JPG")) { // Ruta de la imagen de fondo
+        std::cerr << "ERROR: Background image could not be loaded!" << std::endl;
+    }
+    backgroundSprite.setTexture(backgroundTexture);
+}

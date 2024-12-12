@@ -19,7 +19,7 @@ void Player::initSprite()
     //Set the exture to the sprite
     this->sprite.setTexture(this->textureSheet);
 
-    this->currentFrame = sf::IntRect(0, 0, 30, 30);
+    this->currentFrame = sf::IntRect(0, 0, 32, 32);
 
     this->sprite.setTextureRect((this->currentFrame));
     this->sprite.setScale(1.f, 1.f); // Ajustar el tamaño del sprite (opcional)
