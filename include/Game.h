@@ -7,6 +7,7 @@ private:
     sf::RenderWindow window;
     sf::VideoMode videoMode;
     sf::Event event;
+    sf::Text gameOverText;
 
     //Externos
     Player player;

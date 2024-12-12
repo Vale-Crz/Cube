@@ -73,6 +73,7 @@ int main() {
         } else {
             // Ejecutar el bucle del juego
             if (game) {
+                game->handleEvents();
                 game->update();
                 game->render();
             }

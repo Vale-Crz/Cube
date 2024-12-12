@@ -7,16 +7,25 @@ Game::Game()
     : window(sf::VideoMode(800, 600), "Bounce Ball Game"), score(0), gameOver(false), player(100.f, 250.f)
 {
     window.setFramerateLimit(144);
-    // Semilla para la aleatoriedad
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    std::srand(static_cast<unsigned>(std::time(nullptr)));// Semilla para la aleatoriedad
+
     // Inicializar la meta
     goal.setSize(sf::Vector2f(150.f, 25.f)); // Tamaño de la meta
     goal.setFillColor(sf::Color::Blue); // Color de la meta
     goal.setPosition(325.f, 0.f); // Posición de la meta
+
     // Crear coleccionables
     createCollectibles();
     this->score = 0;
     this->health = 5;
+
+    // Inicializar gameOverText
+    gameOverText.setFont(this->font);
+    gameOverText.setCharacterSize(40);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setString("Game Over!");
+    gameOverText.setPosition(200.f ,200.f);
+
     // Inicializar fuentes y texto
     initFonts();
     initText();
@@ -72,8 +81,19 @@ void Game::handleEvents()
 {
     sf::Event event;
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        switch (event.type) {
+        case sf::Event::Closed:
             window.close();
+            break;
+
+        case sf::Event::KeyPressed:
+            if (event.key.code == sf::Keyboard::Escape)
+                window.close(); 
+            break;
+
+        default:
+            break;
+        }
     }
 }
 
@@ -93,10 +113,13 @@ void Game::renderText(sf::RenderTarget& target) {
 
 void Game::update() {
     if (gameOver) return;
+
     //Actualizacion jugador 
     player.update(&window);
+
     // Actualización de enemigos
     updateEnemies();
+
     // Comprobar colisiones con plataformas, coleccionables y obstáculos
     checkCollisions();
 
@@ -113,9 +136,10 @@ void Game::render() {
 
     if (gameOver) 
     {
-        std::cout << "Game Over! Score: " << score << std::endl;
-        window.close();
-        return;
+        window.draw(backgroundSprite);
+        window.draw(gameOverText); // Renderiza el texto de Game Over
+        window.display();
+        return; // Sal del método después de mostrar Game Over
     }
 
     // Dibujar elementos del juego
@@ -128,6 +152,7 @@ void Game::render() {
         window.draw(collectible);
     }
     renderEnemies(window);
+
     // Dibujar texto de la interfaz
     renderText(window);
 
