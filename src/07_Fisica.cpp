@@ -48,9 +48,11 @@ void Game::initGame()
 {
     gameOver = false;
     createCollectibles();
+
     // Reiniciar puntaje y salud
     score = 0;
     health = 5;
+
     // Actualizar texto inicial
     updateText();
 
@@ -174,71 +176,68 @@ void Game::createCollectibles() {
 }
 
 void Game::initEnemies() {
-    
-    enemy.setSize(sf::Vector2f(40.f, 40.f));
-    enemySpawnTimerMax = 30.f;//Generador de enemigos
-    enemySpawnTimer = enemySpawnTimerMax;
+    if (!enemyTexture.loadFromFile("assets/images/Enemy1.png")) {
+        std::cerr << "ERROR::GAME::INITENEMIES::Could not load enemy texture!" << std::endl;
+    }
+
+
     maxEnemies = 15;//Cantidad en pantalla
+    enemySpawnTimer = 0.9f; // Temporizador para generación de enemigos
+    enemySpawnTimerMax = 50.f;
 }
 
 void Game::spawnEnemy() {
-    if (enemies.size() < maxEnemies) {
-        sf::RectangleShape newEnemy(enemy);
 
-        // Posicion aleatoria
-        newEnemy.setPosition(
-            static_cast<float>(rand() % static_cast<int>(window.getSize().x - newEnemy.getSize().x)),
-            0.f
-        );
+    if (enemies.size() >= maxEnemies) return; // Limitar el número de enemigos a maxEnemies
 
-        // Asignar un color aleatorio con un tamaño y puntaje distinto
-        int type = rand() % 5;
-        switch (type) {
-        case 0:
-            newEnemy.setSize(sf::Vector2f(15.f, 15.f));
-            newEnemy.setFillColor(sf::Color::Magenta);
-            break;
-        case 1:
-            newEnemy.setSize(sf::Vector2f(20.f, 20.f));
-            newEnemy.setFillColor(sf::Color::Blue);
-            break;
-        case 2:
-            newEnemy.setSize(sf::Vector2f(25.f, 25.f));
-            newEnemy.setFillColor(sf::Color::Cyan);
-            break;
-        case 3:
-            newEnemy.setSize(sf::Vector2f(30.f, 30.f));
-            newEnemy.setFillColor(sf::Color::Red);
-            break;
-        case 4:
-            newEnemy.setSize(sf::Vector2f(35.f, 35.f));
-            newEnemy.setFillColor(sf::Color::Green);
-            break;
-        }
+    // Posiciones predefinidas
+    std::vector<sf::Vector2f> positions = {
+        {750.f, 50.f},
+        {750.f, 100.f},
+        {750.f, 200.f},
+        {750.f, 300.f},
+        {750.f, 400.f},
+        {750.f, 500.f},
+        {750.f, 600.f}
+    };
 
-        enemies.push_back(newEnemy);
-    }
+    // Seleccionar una posición aleatoria de la lista predefinida
+    size_t index = std::rand() % positions.size();
+    sf::Vector2f position = positions[index];
+
+    sf::Sprite newEnemy;
+    newEnemy.setTexture(enemyTexture);
+    newEnemy.setPosition(position);
+
+    // Asignar escala aleatoria (opcional para variedad visual)
+    float scale = 0.1f + static_cast<float>(std::rand() % 3) * 0.1f; // Entre 0.1 y 0.5
+    newEnemy.setScale(scale, scale);
+
+    enemies.push_back(newEnemy);
 }
 
 void Game::updateEnemies() {
-    // Temporizador para generar enemigos
+    enemySpawnTimer += 1.f;
+
     if (enemySpawnTimer >= enemySpawnTimerMax) {
         spawnEnemy();
         enemySpawnTimer = 0.f;
-    } else {
-        enemySpawnTimer += 1.f;
     }
 
-    // Mover enemigos hacia abajo
+    // Mover enemigos hacia izquierda
     for (size_t i = 0; i < enemies.size(); i++) {
-        enemies[i].move(0.f, 1.f);
+        enemies[i].move(-1.f, 0.f);
 
-        // Si un enemigo sale de la pantalla, reduce salud y elimínalo
-        if (enemies[i].getPosition().y > window.getSize().y) {
-            enemies.erase(enemies.begin() + i);
-            i--;
+        // Si un enemigo sale de la pantalla
+        if (enemies[i].getPosition().x + enemies[i].getGlobalBounds().width < 0) { 
+        enemies.erase(enemies.begin() + i);
+        i--;
         }
     }
+
+    // Depuración para verificar estado
+    std::cout << "Temporizador: " << enemySpawnTimer 
+              << ", Enemigos activos: " << enemies.size() << std::endl;
 }
 
 void Game::renderEnemies(sf::RenderTarget& target) {
@@ -270,7 +269,6 @@ void Game::checkCollisions() {
         if (player.getBounds().intersects(enemies[i].getGlobalBounds())) {
             // Eliminar enemigo, reducir salud 
             health -= 1;
-
             enemies.erase(enemies.begin() + i);
             break;
         }

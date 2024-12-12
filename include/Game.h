@@ -26,8 +26,11 @@ private:
     int score;
     bool gameOver;
 
-    std::vector<sf::RectangleShape> enemies;
-    sf::RectangleShape enemy;
+
+    sf::Texture enemyTexture;
+    std::vector<sf::Sprite> enemies;
+    //std::vector<sf::RectangleShape> enemies;
+    //sf::RectangleShape enemy;
     float enemySpawnTimer;
     float enemySpawnTimerMax;
     int maxEnemies;
