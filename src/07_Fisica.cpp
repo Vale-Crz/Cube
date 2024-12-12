@@ -7,18 +7,16 @@ Game::Game()
     : window(sf::VideoMode(800, 600), "Bounce Ball Game"), score(0), gameOver(false), player(100.f, 250.f)
 {
     window.setFramerateLimit(144);
-
+    // Semilla para la aleatoriedad
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     // Inicializar la meta
     goal.setSize(sf::Vector2f(150.f, 25.f)); // Tamaño de la meta
     goal.setFillColor(sf::Color::Blue); // Color de la meta
     goal.setPosition(325.f, 0.f); // Posición de la meta
-
     // Crear coleccionables
     createCollectibles();
-    
     this->score = 0;
     this->health = 5;
-
     // Inicializar fuentes y texto
     initFonts();
     initText();
@@ -32,19 +30,27 @@ Game::~Game() {}
 void Game::initGame() 
 {
     gameOver = false;
-    
     createCollectibles();
-
     // Reiniciar puntaje y salud
     score = 0;
     health = 5;
-
     // Actualizar texto inicial
     updateText();
 
     enemies.clear();
     enemySpawnTimer = 0.f;
 }
+
+void Game::resetGoalPosition() {
+    float x = static_cast<float>(std::rand() % (window.getSize().x - static_cast<int>(goal.getSize().x)));
+    float y = static_cast<float>(std::rand() % (window.getSize().y - static_cast<int>(goal.getSize().y)));
+    goal.setPosition(x, y);
+}
+void Game::resetGameElements() {
+    createCollectibles(); // Regenera las bonificaciones
+    initEnemies();        // Regenera los obstáculos
+}
+
 
 void Game::resetGame() {
     initGame();
@@ -65,11 +71,9 @@ void Game::handleEvents()
 
 void Game::updateText() {
     std::stringstream ss;
-
     // Ajustar los valores mostrados en la interfaz gráfica
     ss << "Score: " << this->score << "\n"
-       << "Health: " << this->health << "\n";
-
+    << "Health: " << this->health << "\n";
     // Actualizar el texto
     this->uiText.setString(ss.str());
 }
@@ -81,13 +85,10 @@ void Game::renderText(sf::RenderTarget& target) {
 
 void Game::update() {
     if (gameOver) return;
-
     //Actualizacion jugador 
     player.update(&window);
-
     // Actualización de enemigos
     updateEnemies();
-
     // Comprobar colisiones con plataformas, coleccionables y obstáculos
     checkCollisions();
 
@@ -95,7 +96,6 @@ void Game::update() {
     if (health <= 0) {
         gameOver = true;
     }
-
     // Actualizar texto dinámico
     updateText();
 }
@@ -110,7 +110,6 @@ void Game::render() {
         return;
     }
 
-
     // Dibujar elementos del juego
     window.draw(backgroundSprite);
     window.draw(goal);
@@ -120,9 +119,7 @@ void Game::render() {
     {
         window.draw(collectible);
     }
-
     renderEnemies(window);
-
     // Dibujar texto de la interfaz
     renderText(window);
 
@@ -133,9 +130,7 @@ void Game::createCollectibles() {
     collectibles.clear();
     sf::CircleShape collectible(5.f);
     collectible.setFillColor(sf::Color::Yellow);
-
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-
     int numberOfCollectibles = 20;
     for (int i = 0; i < numberOfCollectibles; ++i) {
         float x = static_cast<float>(std::rand() % (window.getSize().x - 10));
@@ -146,17 +141,18 @@ void Game::createCollectibles() {
 }
 
 void Game::initEnemies() {
-    enemy.setSize(sf::Vector2f(50.f, 50.f));
-    enemySpawnTimerMax = 18.f;//Generador de enemigos
+    
+    enemy.setSize(sf::Vector2f(40.f, 40.f));
+    enemySpawnTimerMax = 30.f;//Generador de enemigos
     enemySpawnTimer = enemySpawnTimerMax;
-    maxEnemies = 20;//Cantidad en pantalla
+    maxEnemies = 15;//Cantidad en pantalla
 }
 
 void Game::spawnEnemy() {
     if (enemies.size() < maxEnemies) {
         sf::RectangleShape newEnemy(enemy);
 
-        // Posición aleatoria
+        // Posicion aleatoria
         newEnemy.setPosition(
             static_cast<float>(rand() % static_cast<int>(window.getSize().x - newEnemy.getSize().x)),
             0.f
@@ -221,8 +217,10 @@ void Game::renderEnemies(sf::RenderTarget& target) {
 void Game::checkCollisions() {
     // Colisión con la meta
     if (player.getBounds().intersects(goal.getGlobalBounds())) {
-        std::cout << "¡Has alcanzado la meta! ¡Felicidades!" << std::endl;
-        resetGame();
+        //std::cout << "¡Has alcanzado la meta! ¡Felicidades!" << std::endl;
+        resetGoalPosition(); // Cambia la posición de la meta
+        resetGameElements(); // Actualiza las bonificaciones y obstáculos
+        score += 10; // Incrementa el puntaje como recompensa
     }
 
     // Colisiones con coleccionables

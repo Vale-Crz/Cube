@@ -12,11 +12,7 @@ private:
     Player player;
 
     sf::RectangleShape goal;
-
-    std::vector<sf::RectangleShape> platforms;
     std::vector<sf::CircleShape> collectibles;
-
-
     sf::Font font;
     sf::Text uiText;
     sf::Texture backgroundTexture;
@@ -45,9 +41,8 @@ private:
     void spawnEnemy();
     void updateEnemies();
     void renderEnemies(sf::RenderTarget& target);
-
-
-
+    void resetGoalPosition();
+    void resetGameElements();
 
 public:
     Game();

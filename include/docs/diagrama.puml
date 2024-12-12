@@ -34,6 +34,8 @@ Game : updateText()
 Game : renderText()
 Game : update()
 Game : render()
+Game : resetGoalPosition()
+Game : resetGameElements()
 
 Menu : moveUp()
 Menu : moveDown()
