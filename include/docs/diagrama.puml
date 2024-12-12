@@ -1,0 +1,57 @@
+@startuml BounceBall
+class BounceBall
+class Game{
+    - Player : player[1]
+    -Event : events[]
+}
+class Menu{
+    -Font : font[1]
+}
+class Window
+class Player
+class Event
+class Font
+
+Game "1" *-- "1" Player
+Game "1" *-- "*" Event
+Menu "1" *-- "1" Font
+
+Player o-- Menu
+Menu o-- Window
+
+Game <-- BounceBall 
+
+Game : initGame()
+Game : resetGame()
+Game : checkCollisions()
+Game : createCollectibles()
+Game : createObstacles()
+Game : initFonts()
+Game : initText()
+Game : isRunning()
+Game : handleEvents()
+Game : updateText()
+Game : renderText()
+Game : update()
+Game : render()
+
+Menu : moveUp()
+Menu : moveDown()
+Menu : getMenuPressed()
+Menu : draw()
+Menu : initBackgroud()
+Menu : initTitle()
+
+Player : initVariables()
+Player : initTexture()
+Player : initSprite()
+Player : initAnimations()
+Player : updateAnimatios()
+Player : updateInput()
+Player : updateWindowBoundCollision()
+Player : update()
+Player : render()
+Player : getBounds()
+Player : update()
+
+Window : mostarVentanas()

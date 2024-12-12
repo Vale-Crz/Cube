@@ -16,14 +16,14 @@ void Player::initTexture()
 
 void Player::initSprite()
 {
-    //Set the exture to the sprite
+    //Set the texture to the ball
     this->sprite.setTexture(this->textureSheet);
 
     this->currentFrame = sf::IntRect(0, 0, 32, 32);
 
     this->sprite.setTextureRect((this->currentFrame));
-    this->sprite.setScale(1.f, 1.f); // Ajustar el tamaño del sprite (opcional)
-    this->sprite.setPosition(100.f, 250.f); // Posición inicial
+    this->sprite.setScale(1.f, 1.f); // Ajustar el tamaño de la bola
+    this->sprite.setPosition(375.f, 500.f);//Posicion inicial de la pelota
 }
 
 void Player::initAnimations()
