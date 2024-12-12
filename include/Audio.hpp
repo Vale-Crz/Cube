@@ -1,5 +1,5 @@
 #pragma once
-#include "Music.h"
+#include "Music.hpp"
 
 class Audio {
 private:

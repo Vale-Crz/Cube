@@ -1,6 +1,6 @@
-#include "Menu.h"
-#include "Game.h"
-#include "Audio.h"
+#include "Menu.hpp"
+#include "Game.hpp"
+#include "Audio.hpp"
 
 using namespace sf;
 
