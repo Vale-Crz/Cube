@@ -13,7 +13,7 @@ int main() {
 
     //Reproducir musica
     Audio audio;
-    if (!audio.loadMusic("./assets/music/ParaMenu.MP3")) {
+    if (!audio.loadMusic("./assets/music/ParaMenu.ogg")) {
         return -1; // Salir si no se puede cargar el audio
     }
     audio.playMusic(); // Reproducir música al inicio

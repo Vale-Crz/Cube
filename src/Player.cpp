@@ -5,25 +5,20 @@ void Player::initVariables()
 {
     this->moving = false; 
 }
-
-
 void Player::initTexture()
 {
-    if (!this->textureSheet.loadFromFile("assets/images/BlueBallSpriteTest.png")) { // Ruta a tu imagen
+    if (!this->textureSheet.loadFromFile("assets/images/BlueBallSpriteTest.png")) { 
         std::cerr << "ERROR::PLAYER::Could not load the player sheet" << std::endl;
     }
 }
 
 void Player::initSprite()
 {
-    //Set the texture to the ball
     this->sprite.setTexture(this->textureSheet);
-
     this->currentFrame = sf::IntRect(0, 0, 32, 32);
-
     this->sprite.setTextureRect((this->currentFrame));
-    this->sprite.setScale(1.f, 1.f); // Ajustar el tamaño de la bola
-    this->sprite.setPosition(375.f, 500.f);//Posicion inicial de la pelota
+    this->sprite.setScale(1.f, 1.f); 
+    this->sprite.setPosition(375.f, 500.f);
 }
 
 void Player::initAnimations()
@@ -93,7 +88,7 @@ void Player::updateAnimatios()
 {
     if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
     {
-            if(this->moving == false)//IDLE animation
+            if(this->moving == false)
         {
                 this->currentFrame.left +=  32.f;
                 if(this->currentFrame.left >= 96.f)
@@ -110,7 +105,6 @@ void Player::update(const sf::RenderTarget* target)
 {
     this->updateInput();
     this->updateAnimatios();
-    //Window bounds collision
     this->updateWindowBoundCollision(target);
 
 }

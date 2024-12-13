@@ -9,7 +9,6 @@ private:
     sf::Event event;
     sf::Text gameOverText;
 
-    //Externos
     Player player;
     Musica gameMusic;
 
@@ -29,8 +28,6 @@ private:
 
     sf::Texture enemyTexture;
     std::vector<sf::Sprite> enemies;
-    //std::vector<sf::RectangleShape> enemies;
-    //sf::RectangleShape enemy;
     float enemySpawnTimer;
     float enemySpawnTimerMax;
     int maxEnemies;

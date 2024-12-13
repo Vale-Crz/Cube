@@ -3,21 +3,26 @@ class BounceBall
 class Game{
     - Player : player[1]
     -Event : events[]
+    -Audio : audio[1]
 }
 class Menu{
     -Font : font[1]
 }
-class Window
 class Player
 class Event
 class Font
+class Audio{
+    -Music : music[2]
+}
+class Music
 
 Game "1" *-- "1" Player
 Game "1" *-- "*" Event
+Game "1" *-- "1" Audio
 Menu "1" *-- "1" Font
+Audio "1" *-- "2" Music
 
 Player o-- Menu
-Menu o-- Window
 
 Game <-- BounceBall 
 
@@ -56,4 +61,10 @@ Player : render()
 Player : getBounds()
 Player : update()
 
-Window : mostarVentanas()
+Music : loadBackgroundMusic()
+Music : playBackgroundMusic()
+Music : stopBackgroundMusic()
+
+Audio : loadMusic()
+Audio : playMusic()
+Audio : stopMusic()
