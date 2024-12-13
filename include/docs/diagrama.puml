@@ -1,28 +1,21 @@
 @startuml BounceBall
 class BounceBall
 class Game{
-    - Player : player[1]
-    -Event : events[]
+    - Menu : menu[1]
     -Audio : audio[1]
 }
-class Menu{
-    -Font : font[1]
-}
+class Menu
 class Player
-class Event
-class Font
 class Audio{
     -Music : music[2]
 }
 class Music
 
-Game "1" *-- "1" Player
-Game "1" *-- "*" Event
+Game "1" *-- "1" Menu
 Game "1" *-- "1" Audio
-Menu "1" *-- "1" Font
 Audio "1" *-- "2" Music
 
-Player o-- Menu
+Player o-- Game
 
 Game <-- BounceBall 
 
